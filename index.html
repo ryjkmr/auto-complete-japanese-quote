@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Quote Auto Completion</title>
+
+  <style type="text/css">
+    #text-area {
+      font-size: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>日本語の括弧類を自動補完する</h1>
+  <p>テキストエリアに「　”　【　などの前括弧類を単体で入力すると、後ろ括弧を自動補完してカーソルを間に置きます</p>
+  <textarea name="" id="text-area" cols="30" rows="10"></textarea>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      const input_element = document.getElementById('text-area');
+
+      // 入力終了時に内容をチェックして置き換える
+      input_element.addEventListener('compositionend', function (e) {
+        const data = e.data;
+        switch (data) {
+          case "「":
+            complete_quote(input_element, '」');
+            break;
+          case "\”":
+            replace_quote(input_element, '“”');
+            break;
+          case "｛":
+            complete_quote(input_element, '｝');
+            break;
+          case "『":
+            complete_quote(input_element, '』');
+            break;
+          case "’":
+            replace_quote(input_element, '‘’');
+            break;
+          case "【":
+            complete_quote(input_element, '】');
+            break;
+
+          case "［":
+            complete_quote(input_element, '］');
+            break;
+          case "（":
+            complete_quote(input_element, '）');
+            break;
+
+          default:
+            break;
+        }
+
+      });
+
+      //後ろに補完する関数
+      function complete_quote(element, charactor) {
+        const content = element.value;
+        const len = content.length;
+        const pos = element.selectionStart;
+        element.value = content.substr(0, pos) + charactor + content.substr(pos, len);
+        element.setSelectionRange(pos, pos);
+      }
+
+      //そっくり入れ替える関数
+      function replace_quote(element, charactor) {
+        const content = element.value;
+        const len = content.length;
+        const pos = element.selectionStart;
+        element.value = content.substr(0, pos - 1) + charactor + content.substr(pos, len);
+        element.setSelectionRange(pos, pos);
+      }
+    });
+
+  </script>
+
+</body>
+
+</html>
